@@ -1,10 +1,19 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://emonPH:AURw9Y9CqdU0jeKx@cluster0.zyyhzcl.mongodb.net/libraryDB?retryWrites=true&w=majority&appName=Cluster0');
-    console.log('MongoDB connected');
+    const uri = process.env.MONGODB_URI as string;
+    if (!uri) {
+      throw new Error('MONGODB_URI is not defined in .env');
+    }
+
+    await mongoose.connect(uri);
+    console.log('✅ MongoDB connected successfully');
   } catch (err) {
-    console.error('Database connection error', err);
+    console.error('❌ Database connection error:', err);
+    process.exit(1);
   }
 };
